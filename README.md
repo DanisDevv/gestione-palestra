@@ -78,6 +78,12 @@ Apri il browser e vai su:
 ### Tabellone Sala Pesi
 ![Sala Pesi Grid](screenshots/salapesi.png)
 
+### Gestione Corsi
+![Gestione Corsi](screenshots/corsi.png)
+
+### Creazione Nuovo Corso
+![Creazione Corso](screenshots/creazione%20corso.png)
+
 ---
 
 ## 👨‍💻 Autore
