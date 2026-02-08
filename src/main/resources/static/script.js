@@ -23,7 +23,7 @@ function showConfirm(titolo, messaggio, onConfirm) {
     new bootstrap.Modal(document.getElementById('modalCustomConfirm')).show();
 }
 
-// --- NAVIGAZIONE ---
+// --- NAVIGAZIONE GENERALE ---
 
 function nascondiTutto() {
     const sezioni = ['landing-section', 'auth-section', 'cliente-section', 'admin-section', 'salapesi-section', 'corsi-admin-section', 'albo-trainers-section', 'gestione-utenti-section'];
@@ -33,25 +33,44 @@ function nascondiTutto() {
     });
 }
 
+// Funzione intelligente per il tasto HOME
+function navigaHome() {
+    if (currentUser) {
+        // Se loggato, la Home è la Dashboard (o Landing con tasti Dashboard)
+        // Opzione A: Vai diretto alla Dashboard
+        loginSuccess();
+        
+        // Opzione B (Se vuoi vedere la Landing ma con i tasti "Dashboard"):
+        // mostraLandingLoggato(); 
+    } else {
+        mostraLanding();
+    }
+}
+
 function mostraLanding() {
     nascondiTutto();
     document.getElementById('landing-section').classList.remove('d-none');
     
     // Gestione Bottoni Hero e Navbar
     if (currentUser) {
+        // LOGGATO
         document.getElementById('public-menu').classList.add('d-none');
+        document.querySelector('.navbar-nav.mx-auto').classList.remove('d-none'); // Mostra menu centrale
         document.getElementById('user-info').classList.remove('d-none');
         document.getElementById('hero-btns-guest').classList.add('d-none');
         document.getElementById('hero-btns-user').classList.remove('d-none');
         document.getElementById('hero-btns-user').classList.add('d-flex');
     } else {
+        // OSPITE
         document.getElementById('public-menu').classList.remove('d-none');
+        document.querySelector('.navbar-nav.mx-auto').classList.add('d-none'); // Nascondi menu centrale (ridondante)
         document.getElementById('user-info').classList.add('d-none');
         document.getElementById('hero-btns-guest').classList.remove('d-none');
         document.getElementById('hero-btns-user').classList.add('d-none');
         document.getElementById('hero-btns-user').classList.remove('d-flex');
     }
 }
+
 
 function mostraLogin() {
     nascondiTutto();
@@ -112,20 +131,26 @@ async function handleRegister(e) {
 }
 
 function loginSuccess() {
-    console.log("Login Success per:", currentUser.username, "Ruolo:", currentUser.ruolo);
     localStorage.setItem('fitlife_user', JSON.stringify(currentUser));
     nascondiTutto();
     
+    // UI Utente & Avatar
     const userImg = currentUser.fotoUrl || `https://i.pravatar.cc/150?u=${currentUser.username}`;
-    const imgEl = document.getElementById('nav-user-img');
-    const nameEl = document.getElementById('username-display');
-    if(imgEl) imgEl.src = userImg;
-    if(nameEl) nameEl.innerText = currentUser.username;
+    document.getElementById('nav-user-img').src = userImg;
+    document.getElementById('username-display').innerText = currentUser.username;
     
+    // Navbar: Nascondi menu pubblico, mostra info utente
     document.getElementById('public-menu').classList.add('d-none');
+    document.querySelector('.navbar-nav.mx-auto').classList.remove('d-none'); // Mostra menu centrale
     document.getElementById('user-info').classList.remove('d-none');
     document.getElementById('user-info').classList.add('d-flex');
 
+    // Hero Section Buttons: Se mai dovessimo vedere la landing, assicuriamoci che i bottoni siano giusti
+    document.getElementById('hero-btns-guest').classList.add('d-none');
+    document.getElementById('hero-btns-user').classList.remove('d-none');
+    document.getElementById('hero-btns-user').classList.add('d-flex');
+
+    // Mostra link privati navbar
     document.querySelectorAll('.private-link').forEach(el => el.classList.remove('d-none'));
 
     const dropGestione = document.getElementById('dropdown-gestione');
